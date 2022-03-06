@@ -1,6 +1,7 @@
 import useInput from '@hooks/useInput';
 import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import { Header, Form, Label, Input, Button, LinkContainer, Error } from './styles';
 
 const SignUp = () => {
@@ -25,6 +26,18 @@ const SignUp = () => {
     e.preventDefault();
     if (!missmatchError) {
       console.log("서버로 회원가입하기");
+      axios.post('http://localhost:3095/api/users', {
+        email,
+        nickname,
+        password,
+      })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error.response);
+        })
+        .finally(() => { });
     }
   }, [email, nickname, password, passwordCheck]);
 
