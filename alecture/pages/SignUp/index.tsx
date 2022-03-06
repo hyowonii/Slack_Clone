@@ -1,22 +1,15 @@
+import useInput from '@hooks/useInput';
 import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Header, Form, Label, Input, Button, LinkContainer, Error } from './styles';
 
 const SignUp = () => {
 
-  const [email, setEmail] = useState('');
-  const [nickname, setNickname] = useState('');
+  const [email, onChangeEmail, setEmail] = useInput('');
+  const [nickname, onChangeNickname, setNickname] = useInput('');
   const [password, setPassword] = useState('');
   const [passwordCheck, setPasswordCheck] = useState('');
   const [missmatchError, setMissmatchError] = useState(false);
-
-  const onChangeEmail = useCallback((e) => {
-    setEmail(e.target.value);
-  }, []);
-
-  const onChangeNickname = useCallback((e) => {
-    setNickname(e.target.value);
-  }, []);
 
   const onChangePassword = useCallback((e) => {
     setPassword(e.target.value);
