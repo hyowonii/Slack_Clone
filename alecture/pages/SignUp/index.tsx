@@ -2,7 +2,7 @@ import useInput from '@hooks/useInput';
 import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Header, Form, Label, Input, Button, LinkContainer, Error } from './styles';
+import { Header, Form, Label, Input, Button, LinkContainer, Error, Success } from './styles';
 
 const SignUp = () => {
 
@@ -11,6 +11,8 @@ const SignUp = () => {
   const [password, setPassword] = useState('');
   const [passwordCheck, setPasswordCheck] = useState('');
   const [missmatchError, setMissmatchError] = useState(false);
+  const [signUpError, setSignUpError] = useState('');
+  const [signUpSuccess, setSignUpSuccess] = useState(false);
 
   const onChangePassword = useCallback((e) => {
     setPassword(e.target.value);
@@ -26,6 +28,8 @@ const SignUp = () => {
     e.preventDefault();
     if (!missmatchError) {
       console.log("서버로 회원가입하기");
+      setSignUpError('');   // 비동기처리 내에 set__ : 비동기 요청 전에 초기화해주는 것이 좋음
+      setSignUpSuccess(false);  // "
       axios.post('http://localhost:3095/api/users', {
         email,
         nickname,
@@ -33,9 +37,11 @@ const SignUp = () => {
       })
         .then((response) => {
           console.log(response);
+          setSignUpSuccess(true);
         })
         .catch((error) => {
           console.log(error.response);
+          setSignUpError(error.response.data);
         })
         .finally(() => { });
     }
@@ -71,6 +77,8 @@ const SignUp = () => {
           </div>
           {missmatchError && <Error>비밀번호가 일치하지 않습니다.</Error>}
           {!nickname && <Error>닉네임을 입력해주세요.</Error>}
+          {signUpError && <Error>{signUpError}</Error>}
+          {signUpSuccess && <Success>회원가입 되었습니다! 로그인해주세요.</Success>}
         </Label>
         <Button type="submit">회원가입</Button>
       </Form>
