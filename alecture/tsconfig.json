@@ -2,7 +2,10 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "sourceMap": true,
-    "lib": ["ES2020", "DOM"],
+    "lib": [
+      "ES2020",
+      "DOM"
+    ],
     "jsx": "react",
     "module": "esnext",
     "moduleResolution": "Node",
@@ -11,12 +14,24 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
-      "@hooks/*": ["hooks/*"],
-      "@components/*": ["components/*"],
-      "@layouts/*": ["layouts/*"],
-      "@pages/*": ["pages/*"],
-      "@utils/*": ["utils/*"],
-      "@typings/*": ["typings/*"]
+      "@hooks/*": [
+        "hooks/*"
+      ],
+      "@components/*": [
+        "components/*"
+      ],
+      "@layouts/*": [
+        "layouts/*"
+      ],
+      "@pages/*": [
+        "pages/*"
+      ],
+      "@utils/*": [
+        "utils/*"
+      ],
+      "@typings/*": [
+        "typings/*"
+      ]
     }
   }
 }
