@@ -3,9 +3,14 @@ import useInput from '@hooks/useInput';
 import { Header, Form, Label, Input, Button, LinkContainer } from '@pages/SignUp/styles';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import useSWR from 'swr';
+import fetcher from '@utils/fetcher';
 
 const LogIn = () => {
 
+  const { data: userData, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher, {
+    dedupingInterval: 100000,
+  });
   const [email, onChangeEmail, setEmail] = useInput('');
   const [password, onChangePassword, setPassword] = useInput('');
   const [logInError, setLogInError] = useState(false);
@@ -16,8 +21,10 @@ const LogIn = () => {
     axios.post(
       'http://localhost:3095/api/users/login',
       { email, password },
+      { withCredentials: true },
     )
       .then(() => {
+        mutate();
       })
       .catch((error) => {
         setLogInError(error.response?.data?.statusCode === 401);
