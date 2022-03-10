@@ -1,9 +1,10 @@
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
-import React, { useCallback } from 'react';
+import React, { FC, useCallback } from 'react';
+import { Redirect } from 'react-router';
 import useSWR from 'swr';
 
-const Workspace = () => {
+const Workspace: FC = ({ children }) => {   // FC : children 사용할때
 
   const { data: userData, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher); // swr: 컴포넌트들을 넘나드는 전역 스토리지
 
@@ -16,7 +17,16 @@ const Workspace = () => {
       });
   }, []);
 
+  if (!userData) {
+    return <Redirect to="/login" />
+  }
+
   return (
-    <button onClick={onLogout}>로그아웃</button>
+    <div>
+      <button onClick={onLogout}>로그아웃</button>
+      {children}
+    </div>
   )
 }
+
+export default Workspace;

@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import useInput from '@hooks/useInput';
 import { Header, Form, Label, Input, Button, LinkContainer } from '@pages/SignUp/styles';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import axios from 'axios';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
@@ -30,6 +30,14 @@ const LogIn = () => {
         setLogInError(error.response?.data?.statusCode === 401);
       })
   }, [email, password]);
+
+  if (userData === undefined) {  // 재로딩될 때 창 떴다 사라짐 처리
+    return <div>로딩중...</div>
+  }
+
+  if (userData) {
+    return <Redirect to="/workspace/channel" />
+  }
 
   return (
     <div id="container">
