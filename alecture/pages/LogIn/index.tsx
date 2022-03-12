@@ -8,7 +8,7 @@ import fetcher from '@utils/fetcher';
 
 const LogIn = () => {
 
-  const { data: userData, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher, {
+  const { data, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher, {
     dedupingInterval: 100000,
   });
   const [email, onChangeEmail, setEmail] = useInput('');
@@ -23,19 +23,19 @@ const LogIn = () => {
       { email, password },
       { withCredentials: true },
     )
-      .then(() => {
-        mutate();
+      .then((response) => {
+        mutate(response.data, false);   // OPTIMISTIC UI
       })
       .catch((error) => {
         setLogInError(error.response?.data?.statusCode === 401);
       })
   }, [email, password]);
 
-  if (userData === undefined) {  // 재로딩될 때 창 떴다 사라짐 처리
+  if (data === undefined) {  // 재로딩될 때 창 떴다 사라짐 처리
     return <div>로딩중...</div>
   }
 
-  if (userData) {
+  if (data) {
     return <Redirect to="/workspace/channel" />
   }
 

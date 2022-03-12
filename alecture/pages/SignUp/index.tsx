@@ -7,7 +7,7 @@ import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 
 const SignUp = () => {
-  const { data: userData, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher); //
+  const { data, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher); //
 
   const [email, onChangeEmail, setEmail] = useInput('');
   const [nickname, onChangeNickname, setNickname] = useInput('');
@@ -50,7 +50,7 @@ const SignUp = () => {
     }
   }, [email, nickname, password, passwordCheck]);
 
-  if (userData) {
+  if (data) {
     return <Redirect to="/workspace/channel" />
   }
 
