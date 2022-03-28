@@ -21,8 +21,8 @@ const Workspace: FC = ({ children }) => {   // FC : children 사용할때
 
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showCreateWorkspaceModal, setShowCreateWorkspaceModal] = useState(false);
-  const [newWorkspace, setNewWorkspace] = useInput('');
-  const [newUrl, setNewUrl] = useInput('');
+  const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput('');
+  const [newUrl, onChangeNewUrl, setNewUrl] = useInput('');
 
   const { data: userData, error } = useSWR<IUser | false>('http://localhost:3095/api/users', fetcher, {
     dedupingInterval: 2000  // 2초(캐시 유지 시간)
@@ -66,7 +66,7 @@ const Workspace: FC = ({ children }) => {   // FC : children 사용할때
     },
     )
       .then(() => {
-        mutate(false, false);
+        //mutate(false, false);
         setShowCreateWorkspaceModal(false);
         setNewWorkspace('');    // input창 비워두기
         setNewUrl('');
@@ -76,14 +76,6 @@ const Workspace: FC = ({ children }) => {   // FC : children 사용할때
         toast.error(error.response?.data, { position: 'bottom-center' });
       });
   }, [newWorkspace, newUrl]);
-
-  const onChangeNewWorkspace = useCallback(() => {
-
-  }, []);
-
-  const onChangeNewUrl = useCallback(() => {
-
-  }, []);
 
   if (!userData) {
     return <Redirect to="/login" />
