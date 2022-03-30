@@ -1,14 +1,14 @@
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
 import React, {FC, useCallback, useState, VFC} from 'react';
-import { Redirect, Route, Switch } from 'react-router';
+import {Redirect, Route, Switch, useParams} from 'react-router';
 import useSWR, { mutate } from 'swr';
 import { AddButton, Channels, Chats, Header, LogOutButton, MenuScroll, ProfileImg, ProfileModal, RightMenu, WorkspaceButton, WorkspaceModal, WorkspaceName, Workspaces, WorkspaceWrapper } from '@layouts/Workspace/styles';
 import gravatar from 'gravatar';
 import loadable from '@loadable/component';
 import Menu from '@components/Menu';
 import { Link } from 'react-router-dom';
-import { IUser } from '@typings/db';
+import {IChannel, IUser} from '@typings/db';
 import { Button, Input, Label } from '@pages/SignUp/styles';
 import useInput from '@hooks/useInput';
 import Modal from '@components/Modal';
@@ -27,9 +27,18 @@ const Workspace: VFC = () => {   // FC : children 사용할때
   const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput('');
   const [newUrl, onChangeNewUrl, setNewUrl] = useInput('');
 
-  const { data: userData, error } = useSWR<IUser | false>('http://localhost:3095/api/users', fetcher, {
-    dedupingInterval: 2000  // 2초(캐시 유지 시간)
-  }); // swr: 컴포넌트들을 넘나드는 전역 스토리지
+  const {workspace} = useParams<{workspace: string}>();
+  const { data: userData, error } = useSWR<IUser | false>(
+      'http://localhost:3095/api/users',
+      fetcher,
+      {
+        dedupingInterval: 2000  // 2초(캐시 유지 시간)\
+      }
+  ); // swr: 컴포넌트들을 넘나드는 전역 스토리지
+  const {data: channelData} = useSWR<IChannel[]>(
+      userData ? `http://localhost:3095/api/workspaces/${workspace}/channels` : null,   // swr 조건부요청 지원
+      fetcher,
+  );  // 서버로부터 채널데이터 받아옴
 
   const onLogout = useCallback(() => {
     axios.post('http://localhost:3095/api/users/logout', null, {
@@ -134,12 +143,13 @@ const Workspace: VFC = () => {   // FC : children 사용할때
                 <button onClick={onLogout}>로그아웃</button>
               </WorkspaceModal>
             </Menu>
+            {channelData?.map((v) => (<div>{v.name}</div>))}
           </MenuScroll>
         </Channels>
         <Chats>
           <Switch>
-            <Route path="/workspace/channel" component={Channel} />
-            <Route path="/workspace/dm" component={DirectMsg} />
+            <Route path="/workspace/:workspace/channel/:channel" component={Channel} />
+            <Route path="/workspace/:workspace/dm/:id" component={DirectMsg} />
           </Switch>
         </Chats>
       </WorkspaceWrapper>
@@ -156,7 +166,11 @@ const Workspace: VFC = () => {   // FC : children 사용할때
           <Button type="submit">생성하기</Button>
         </form>
       </Modal>
-      <CreateChannelModal show={showCreateChannelModal} onCloseModal={onCloseModal} />
+      <CreateChannelModal
+          show={showCreateChannelModal}
+          onCloseModal={onCloseModal}
+          setShowCreateChannelModal={setShowCreateChannelModal}
+      />
     </div>
   )
 }

@@ -51,7 +51,7 @@ const SignUp = () => {
   }, [email, nickname, password, passwordCheck]);
 
   if (data) {
-    return <Redirect to="/workspace/channel" />
+    return <Redirect to="/workspace/sleact/channel/일반" />
   }
 
   return (
